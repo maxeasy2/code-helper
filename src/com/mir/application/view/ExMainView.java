@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -104,8 +105,9 @@ public class ExMainView {
 		createContents();
 		shlCodeHelperV.open();
 		shlCodeHelperV.layout();
-		int x = (display.getBounds().width - shlCodeHelperV.getSize().x) / 2;
-		int y = (display.getBounds().height - shlCodeHelperV.getSize().y) / 2;
+		Monitor primaryMonitor = Display.getDefault().getPrimaryMonitor();
+		int x = (primaryMonitor.getBounds().width - shlCodeHelperV.getSize().x) / 2;
+		int y = (primaryMonitor.getBounds().height - shlCodeHelperV.getSize().y) / 2;
 		shlCodeHelperV.setLocation(x, y);
 		
 		while (!shlCodeHelperV.isDisposed()) {
@@ -267,7 +269,7 @@ public class ExMainView {
 													thread.start();
 												}
 											}else{
-												openErrorDialog("Json 구문 에러");
+												openErrorDialog(result.getResultMsg());
 											}
 										}
 									});

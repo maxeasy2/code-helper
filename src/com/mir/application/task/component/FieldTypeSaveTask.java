@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
+import com.mir.application.task.TaskException;
 import com.mir.application.task.TaskRunner;
 import com.mir.application.task.vo.TaskResult;
 
@@ -35,10 +36,10 @@ public class FieldTypeSaveTask extends TaskRunner<String[], String[], TaskResult
 				result.setData(fieldTypeList);
 				
 			}else{
-				throw new Exception();
+				throw new TaskException();
 			}
 		}catch(Exception e){
-			throw new Exception("[변수타입 설정 저장 에러] log !!!");
+			throw new TaskException("[변수타입 설정 저장 에러] log !!!");
 		}finally {
 			if(oos != null )oos.close();
 			if(fos != null )fos.close();

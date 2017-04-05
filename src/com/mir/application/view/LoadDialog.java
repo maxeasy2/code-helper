@@ -1,10 +1,14 @@
 package com.mir.application.view;
 
+import java.io.InputStream;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
@@ -36,9 +40,13 @@ public class LoadDialog extends Dialog implements ASyncDialog{
 		shell.open();
 		shell.layout();
 		display = getParent().getDisplay();
-		int x = (display.getBounds().width - shell.getSize().x) / 2;
-		int y = (display.getBounds().height - shell.getSize().y) / 2;
-		shell.setLocation(x, y);
+		
+		Rectangle parentSize = getParent().getBounds();
+		Rectangle shellSize = shell.getBounds();
+		int locationX = (parentSize.width - shellSize.width)/2+parentSize.x;
+		int locationY = (parentSize.height - shellSize.height)/2+parentSize.y;
+		shell.setLocation(new Point(locationX, locationY));
+		
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -66,9 +74,9 @@ public class LoadDialog extends Dialog implements ASyncDialog{
 		lblNewLabel.setBounds(70, 26, 122, 15);
 		lblNewLabel.setText("잠시만 기다려주세요...");
 		
-		
 		ImageLoader loader = new ImageLoader();
-		final ImageData[] frames = loader.load("./image/loading.gif");
+		InputStream in = getClass().getClassLoader().getResourceAsStream("loading.gif");
+		final ImageData[] frames = loader.load (in);
 		
 		final Label lblNewLabel_1 = new Label(composite, SWT.NONE);
 		lblNewLabel_1.setBounds(13, 12, 44, 44);

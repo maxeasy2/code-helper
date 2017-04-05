@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
+import com.mir.application.task.TaskException;
 import com.mir.application.task.TaskRunner;
 import com.mir.application.task.vo.TaskResult;
 
@@ -38,7 +39,7 @@ public class FieldTypeLoadTask extends TaskRunner<Void, Void, TaskResult> {
 			}
 				
 		}catch(Exception e){
-			throw new Exception("[변수타입 설정 로드 에러] log !!!");
+			throw new TaskException("[변수타입 설정 로드 에러] log !!!");
 		}finally {
 			if(ois != null )ois.close();
 			if(fis != null )fis.close();

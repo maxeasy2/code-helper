@@ -1,5 +1,6 @@
 package com.mir.application.task;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ public abstract class TaskRunner<Params, Value, Process> implements Runnable{
 
 	public void run() {
 		String errorMsg = null;
+		String simpleMsg = null;
 		Process process = null;
 		try {
 			process = this.doInBackground(value);
@@ -39,13 +41,21 @@ public abstract class TaskRunner<Params, Value, Process> implements Runnable{
 			e.printStackTrace();
 			errorMsg = e.getMessage();
 			logger.error(errorMsg);
+			if( e instanceof TaskException ){
+				TaskException te = (TaskException) e;
+				simpleMsg = te.getSimpleMsg();
+			}
 		}finally {
 			TaskResult result = this.onPostExecute(process);
 			if(taskCallBack != null){
 				if(result == null ){
 					result = new TaskResult();
 					result.setSuccess(false);
-					result.setResultMsg(errorMsg);
+					if( !StringUtils.isEmpty( simpleMsg ) ){
+						result.setResultMsg(simpleMsg);
+					}else{
+						result.setResultMsg(errorMsg);
+					}
 				}
 				taskCallBack.processResult(result);
 			}

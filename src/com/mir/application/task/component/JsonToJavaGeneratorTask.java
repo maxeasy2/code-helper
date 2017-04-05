@@ -1,5 +1,6 @@
 package com.mir.application.task.component;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -10,6 +11,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.mir.application.Constant;
+import com.mir.application.task.TaskException;
 import com.mir.application.task.TaskRunner;
 import com.mir.application.task.vo.SourceCode;
 import com.mir.application.task.vo.TaskResult;
@@ -49,10 +51,16 @@ public class JsonToJavaGeneratorTask extends TaskRunner<MainViewVo,Void, TaskRes
 			}
 			result.setData(sourceList);
 			result.setSuccess(true);
+		}catch(SocketTimeoutException ste){
+			ste.printStackTrace();
+			TaskException ex = new TaskException("[http timeout 에러] log :: \n"+vo.toString());
+			ex.setSimpleMsg("HTTP Timeout 에러");
+			throw ex;
 		}catch(Exception e){
 			e.printStackTrace();
-			result.setSuccess(false);
-			throw new Exception("[Json 에러] log :: \n"+vo.toString());
+			TaskException ex = new TaskException("[Json 에러] log :: \n"+vo.toString());
+			ex.setSimpleMsg("Json 구문 에러");
+			throw ex;
 		}
 		
 		return result;

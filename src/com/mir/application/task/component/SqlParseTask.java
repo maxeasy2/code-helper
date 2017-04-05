@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.mir.application.Constant;
+import com.mir.application.task.TaskException;
 import com.mir.application.task.TaskRunner;
 import com.mir.application.task.vo.SourceCode;
 import com.mir.application.task.vo.TaskResult;
@@ -79,10 +80,10 @@ public class SqlParseTask extends TaskRunner<MainViewVo,Void, TaskResult> {
 					result.setData(shoppringCode);
 				}
 			}else{
-				throw new Exception();
+				throw new TaskException();
 			}
 		}catch(Exception e){
-			throw new Exception("[Sql 구문 에러] log :: \n"+vo.toString());
+			throw new TaskException("[Sql 구문 에러] log :: \n"+vo.toString());
 		}
 		
 		return result;
