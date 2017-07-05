@@ -75,6 +75,8 @@ public class SqlToJavaGeneratorTask extends TaskRunner<MainViewVo,Void, TaskResu
 					result.setData(this.makeSqlInsertQuery());
 				}else if(vo.getGenerateType() == Constant.GENERATE_TYPES_SQL_UPDATE ){
 					result.setData(this.makeSqlUpdateQuery());
+				}else if(vo.getGenerateType() == Constant.GENERATE_TYPES_SQL_MERGE ){
+					result.setData(this.makeSqlMergeQuery());
 				}
 			}else{
 				throw new TaskException();
@@ -350,7 +352,7 @@ public class SqlToJavaGeneratorTask extends TaskRunner<MainViewVo,Void, TaskResu
 	
 	public String makeSqlInsertQuery(){
 		StringBuffer sb = new StringBuffer();
-		String tableName = "insert_table";
+		String tableName = "#table_name#";
 		
 		sb.append("INSERT INTO ").append(tableName).append(" ( ").append("\n");
 		String rsField = StringUtils.join(resultSetFieldList,"\n\t\t\t,");
@@ -366,7 +368,7 @@ public class SqlToJavaGeneratorTask extends TaskRunner<MainViewVo,Void, TaskResu
 	
 	public String makeSqlUpdateQuery(){
 		StringBuffer sb = new StringBuffer();
-		String tableName = "update_table";
+		String tableName = "#table_name#";
 		List<String> sqlVariableList = this.getSqlVariableList(this.getSelectFieldTypeList());
 		sb.append("UPDATE ").append(tableName).append(" SET ").append("\n");
 		for(int i=0; i<resultSetFieldList.size(); i++){
@@ -374,6 +376,32 @@ public class SqlToJavaGeneratorTask extends TaskRunner<MainViewVo,Void, TaskResu
 			if( i != 0 ) comma = ",";
 			sb.append(comma).append(resultSetFieldList.get(i)).append(" = ").append(sqlVariableList.get(i)).append("\n");
 		}
+		
+		return sb.toString();
+	}
+	
+	public String makeSqlMergeQuery(){
+		StringBuffer sb = new StringBuffer();
+		String tableName = "#table_name#";
+		List<String> sqlVariableList = this.getSqlVariableList(this.getSelectFieldTypeList());
+		sb.append("MERGE INTO ").append(tableName).append(" A").append("\n");
+		sb.append("USING DUAL").append("\n");
+		sb.append("   ON ( A.#ID_COLUMN# = '#VALUE#' )").append("\n");
+		sb.append("WHEN MATCHED THEN").append("\n");
+		sb.append("UPDATE SET ").append("\n");
+		for(int i=0; i<resultSetFieldList.size(); i++){
+			String comma = "";
+			if( i != 0 ) comma = ",";
+			sb.append("\t\t").append(comma).append(resultSetFieldList.get(i)).append(" = ").append(sqlVariableList.get(i)).append("\n");
+		}
+		sb.append("WHEN NOT MATCHED THEN").append("\n");
+		sb.append("INSERT ( ").append("\n");
+		String rsField = StringUtils.join(resultSetFieldList,"\n\t\t\t,");
+		sb.append("\t\t\t").append(rsField).append("\n");
+		sb.append(") VALUES ( ").append("\n");
+		String seletField = StringUtils.join(sqlVariableList,"\n\t\t\t,");
+		sb.append("\t\t\t").append(seletField).append("\n");
+		sb.append(")");
 		
 		return sb.toString();
 	}

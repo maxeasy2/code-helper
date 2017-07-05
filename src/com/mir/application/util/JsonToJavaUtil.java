@@ -139,7 +139,33 @@ public class JsonToJavaUtil {
 		return key.substring(0, 1).toUpperCase()+key.substring(1,key.length());
 	}
 	
-	public static void main(String[] args) {
+	
+	private void getJsObject(Object object){
+		if( object == null){
+			return ;
+		}
+		
+		if(object instanceof Map){
+			Map<String,Object> jsonMap = (Map<String, Object>) object;
+			Set<String> keySet = jsonMap.keySet();
+			Iterator<String> it = keySet.iterator();
+			while(it.hasNext()){
+				String key = it.next();
+				System.out.println(key);
+				this.getJsObject( jsonMap.get(key) );
+			}
+		}else if ( object instanceof List ){
+			List<Object> jsonList = (List<Object>) object;
+			if( jsonList != null && jsonList.size() > 0 ){
+				this.getJsObject( jsonList.get(0) );
+			}
+		}/*else{
+			System.out.println(object.toString());
+		}*/
+		
+	}
+	
+	public static void main(String[] args) throws Exception {
 		StringBuffer sbuf = new StringBuffer();
 	       sbuf.append("{") ;
 	       sbuf.append("\"name\" : { \"first\" : \"Joe\", \"last\" : 11231231312312324 },") ;
@@ -151,14 +177,16 @@ public class JsonToJavaUtil {
 	       sbuf.append("\"Resultlist\" : [{\"sss\":1},{\"sss\":2},{\"sss\":3},{\"sss\":4}]") ;
 	       sbuf.append("}") ;
 	       
-	       JsonToJavaUtil test = new JsonToJavaUtil();
-	       try {
+	    JsonToJavaUtil test = new JsonToJavaUtil();
+	    Map<String, Object> map = test.jsonToMap(sbuf.toString());
+	    test.getJsObject(map);
+	   /* try {
 			List<Map<String,String>> list = test.getDataTypeMapList(sbuf.toString());
 			System.out.println(list.toString());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	       
+	      */ 
 	}
 }

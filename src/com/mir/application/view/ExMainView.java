@@ -416,11 +416,11 @@ public class ExMainView {
 		setter.setText("setter");
 		
 		Label lblShoppingOption = new Label(composite, SWT.NONE);
-		lblShoppingOption.setBounds(10, 298, 100, 15);
-		lblShoppingOption.setText("Shopping Option :");
+		lblShoppingOption.setBounds(10, 298, 80, 15);
+		lblShoppingOption.setText("milti Option :");
 		
 		Group shoppingOption = new Group(composite, SWT.NONE);
-		shoppingOption.setBounds(115, 259, 149, 89);
+		shoppingOption.setBounds(105, 259, 159, 89);
 		
 		baseForm = new Button(shoppingOption, SWT.CHECK);
 		baseForm.setBounds(10, 19, 74, 16);
